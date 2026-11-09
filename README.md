@@ -11,8 +11,8 @@ Plataforma integrada de monitoramento e análise de **riscos urbanos cotidianos*
 
 | Nome completo | RM |
 |---|---|
-| Juan | RM559744 |
-| Kagio | RM559212 |
+| Juan Alberto Lenis Rodriguez | RM559744 |
+| Kagio Miura | RM559212 |
 
 ---
 
