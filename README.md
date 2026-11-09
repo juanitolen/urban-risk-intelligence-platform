@@ -9,9 +9,9 @@ Plataforma integrada de monitoramento e análise de **riscos urbanos cotidianos*
 
 ## Vídeo de demonstração
 
-[![Demonstração da Urban Risk Intelligence Platform](docs/demo/preview.jpg)](docs/demo/urban-risk-demo.mp4)
+[![Demonstração da Urban Risk Intelligence Platform](docs/demo/preview.jpg)](https://juanitolen.github.io/urban-risk-intelligence-platform/)
 
-**[▶ Assistir ao vídeo (3min49s)](docs/demo/urban-risk-demo.mp4)**. O vídeo mostra:
+**[▶ Assistir ao vídeo no navegador (3min49s)](https://juanitolen.github.io/urban-risk-intelligence-platform/)**. Também dá para [baixar o arquivo MP4](https://github.com/juanitolen/urban-risk-intelligence-platform/raw/main/docs/demo/urban-risk-demo.mp4). O vídeo mostra:
 
 - a API rodando e o app recebendo dados em tempo real;
 - a priorização dos alertas e o relato anônimo;
