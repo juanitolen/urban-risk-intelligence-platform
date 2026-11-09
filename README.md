@@ -294,7 +294,17 @@ Medido em teste automatizado: a queda é detectada em **~4,5 s** e a reconexão 
 
 ### Design
 
-Design system gerado com a skill **ui-ux-pro-max**: estilo *Accessible & Ethical*, paleta navy/azul de alto contraste e tipografia Atkinson Hyperlegible. Ele está em [`design-system/urban-risk/MASTER.md`](design-system/urban-risk/MASTER.md).
+Design system gerado com a skill **ui-ux-pro-max**: paleta navy/azul de alto contraste e tipografia Atkinson Hyperlegible. Ele está em [`design-system/urban-risk/MASTER.md`](design-system/urban-risk/MASTER.md).
+
+A estética é **glassmorphism**:
+
+- superfícies de vidro fosco (`expo-blur`) sobre um fundo vibrante (gradiente + manchas de cor);
+- borda clara de 1 px e reflexo de luz no topo;
+- preenchimento translúcido calibrado para manter o contraste de texto em 4.5:1 (claro e escuro).
+
+A navegação é uma **tab bar flutuante de vidro com sliding pill**: uma pílula sólida desliza até a aba ativa com spring sem overshoot. A mesma pílula é usada no seletor Lista/Mapa.
+
+Ações rápidas ficam num **gooey menu**: o botão "+" solta as ações como gotas que se fundem (metaball com filtro SVG de blur + matriz de alfa). As ações são relatar alagamento, calor extremo ou falta de serviço (já abre o formulário no tipo certo) e atualizar agora.
 
 O movimento segue a skill **design-motion-principles** (lentes de "polimento de produção" e "contenção", para app mobile):
 

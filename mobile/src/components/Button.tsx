@@ -1,6 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import { radius, space, useTheme } from '../theme/tokens';
+import { Glass } from './Glass';
 import { Text } from './Text';
 
 type Kind = 'primary' | 'secondary' | 'danger';
@@ -17,7 +18,7 @@ export function Button({ label, onPress, kind = 'primary', icon, loading, disabl
   const { c } = useTheme();
   const palette = {
     primary: { bg: c.accent, fg: c.onAccent, border: c.accent },
-    secondary: { bg: c.card, fg: c.foreground, border: c.borderStrong },
+    secondary: { bg: 'transparent', fg: c.foreground, border: 'transparent' },
     danger: { bg: c.danger, fg: '#FFFFFF', border: c.danger },
   }[kind];
   const off = disabled || loading;
@@ -36,6 +37,7 @@ export function Button({ label, onPress, kind = 'primary', icon, loading, disabl
         pressed && { transform: [{ scale: 0.98 }] },
       ]}
     >
+      {kind === 'secondary' && <Glass rounded={radius.pill} style={StyleSheet.absoluteFill} />}
       <View style={styles.row}>
         {loading ? <ActivityIndicator color={palette.fg} /> : icon ? <Ionicons name={icon} size={20} color={palette.fg} /> : null}
         <Text variant="bodyBold" color={palette.fg}>{label}</Text>
@@ -45,6 +47,6 @@ export function Button({ label, onPress, kind = 'primary', icon, loading, disabl
 }
 
 const styles = StyleSheet.create({
-  base: { minHeight: 52, borderRadius: radius.md, borderWidth: 1, paddingHorizontal: space.lg, justifyContent: 'center' },
+  base: { minHeight: 52, borderRadius: radius.pill, borderWidth: 1, paddingHorizontal: space.lg, justifyContent: 'center' },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm },
 });

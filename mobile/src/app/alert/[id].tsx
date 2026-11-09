@@ -8,6 +8,7 @@ import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { ConnectionBanner } from '../../components/ConnectionBanner';
 import { EmptyState } from '../../components/EmptyState';
+import { GlassBackground } from '../../components/Glass';
 import { Text } from '../../components/Text';
 import { clockTime, formatValue, relativeTime, RESIDENT_ADVICE } from '../../logic/format';
 import { useLiveData, useNow } from '../../state/LiveData';
@@ -29,7 +30,13 @@ export default function AlertDetail() {
 
   const alert = fromList ?? fetched;
   if (!alert) {
-    return <EmptyState icon="search" title="Alerta não encontrado" body="Ele pode ter sido encerrado ou o servidor está fora do ar." />;
+    return (
+      <GlassBackground>
+        <View style={{ padding: space.lg }}>
+          <EmptyState icon="search" title="Alerta não encontrado" body="Ele pode ter sido encerrado ou o servidor está fora do ar." />
+        </View>
+      </GlassBackground>
+    );
   }
 
   const resolve = async () => {
@@ -43,7 +50,7 @@ export default function AlertDetail() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: c.background }}>
+    <GlassBackground>
       <ConnectionBanner />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.head}>
@@ -100,7 +107,7 @@ export default function AlertDetail() {
             accessibilityHint="Encerra o alerta para todos os usuários" />
         )}
       </ScrollView>
-    </View>
+    </GlassBackground>
   );
 }
 

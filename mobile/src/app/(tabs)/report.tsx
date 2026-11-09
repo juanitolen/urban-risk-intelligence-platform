@@ -1,11 +1,13 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Location from 'expo-location';
-import { useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import type { CommunityReport, RiskType } from '../../api/types';
 import { ApiError } from '../../api/client';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
+import { Glass } from '../../components/Glass';
 import { Screen } from '../../components/Screen';
 import { FilterChips } from '../../components/Segmented';
 import { Text } from '../../components/Text';
@@ -46,6 +48,16 @@ export default function Report() {
   const [locating, setLocating] = useState(false);
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState<Status>({ kind: 'idle' });
+  const params = useLocalSearchParams<{ risk?: RiskType }>();
+
+  // Atalho vindo do menu gooey: já abre com o tipo de risco escolhido.
+  useEffect(() => {
+    if (params.risk && params.risk in RISK_LABEL) {
+      setRisk(params.risk);
+      setLevel(null);
+      setStatus({ kind: 'idle' });
+    }
+  }, [params.risk]);
 
   const useMyLocation = async () => {
     setLocating(true);
@@ -102,11 +114,12 @@ export default function Report() {
             return (
               <Pressable key={t} onPress={() => { setRisk(t); setLevel(null); setStatus({ kind: 'idle' }); }}
                 accessibilityRole="radio" accessibilityState={{ checked: active }} accessibilityLabel={RISK_LABEL[t]}
-                style={({ pressed }) => [styles.riskTile, {
-                  borderColor: active ? c.accent : c.border, backgroundColor: active ? c.accent : c.card, opacity: pressed ? 0.85 : 1,
-                }]}>
-                <Ionicons name={RISK_ICON[t]} size={28} color={active ? c.onAccent : c.accent} />
-                <Text variant="label" color={active ? c.onAccent : c.foreground} style={{ textAlign: 'center' }}>{RISK_LABEL[t]}</Text>
+                style={({ pressed }) => [{ flex: 1, opacity: pressed ? 0.85 : 1 }]}>
+                <Glass rounded={radius.lg} fill={active ? c.accent : undefined} borderColor={active ? c.accent : undefined}
+                  contentStyle={styles.riskTile}>
+                  <Ionicons name={RISK_ICON[t]} size={28} color={active ? c.onAccent : c.accent} />
+                  <Text variant="label" color={active ? c.onAccent : c.foreground} style={{ textAlign: 'center' }}>{RISK_LABEL[t]}</Text>
+                </Glass>
               </Pressable>
             );
           })}
@@ -144,7 +157,7 @@ export default function Report() {
             placeholderTextColor={c.mutedForeground}
             multiline
             maxLength={280}
-            style={[styles.input, typeScale.body, { color: c.foreground, borderColor: c.borderStrong, backgroundColor: c.card }]}
+            style={[styles.input, typeScale.body, { color: c.foreground, borderColor: c.glassBorder, backgroundColor: c.glassFillStrong }]}
           />
           <Text variant="caption" muted>Não escreva nome, telefone ou documento — se escrever, removemos antes de salvar.</Text>
           <Button label="Enviar relato" icon="send" onPress={submit} loading={status.kind === 'sending'} />
@@ -167,6 +180,6 @@ function Feedback({ icon, color, bg, text }: { icon: React.ComponentProps<typeof
 const styles = StyleSheet.create({
   step: { gap: space.sm },
   riskGrid: { flexDirection: 'row', gap: space.sm },
-  riskTile: { flex: 1, minHeight: 96, borderWidth: 2, borderRadius: radius.lg, alignItems: 'center', justifyContent: 'center', gap: space.xs, padding: space.sm },
+  riskTile: { minHeight: 96, alignItems: 'center', justifyContent: 'center', gap: space.xs, padding: space.sm },
   input: { minHeight: 96, borderWidth: 1, borderRadius: radius.md, padding: space.md, textAlignVertical: 'top' },
 });

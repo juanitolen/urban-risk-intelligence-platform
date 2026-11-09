@@ -8,7 +8,7 @@ import { LiveIndicator } from '../../components/LiveIndicator';
 import { Screen } from '../../components/Screen';
 import { FilterChips, Segmented } from '../../components/Segmented';
 import { useLiveData, useNow } from '../../state/LiveData';
-import { space } from '../../theme/tokens';
+import { space, TAB_BAR_SPACE } from '../../theme/tokens';
 
 type Filter = 'ALL' | RiskType;
 
@@ -49,4 +49,4 @@ export default function Events() {
   );
 }
 
-const styles = StyleSheet.create({ list: { paddingBottom: space.xxl } });
+const styles = StyleSheet.create({ list: { paddingBottom: TAB_BAR_SPACE } });

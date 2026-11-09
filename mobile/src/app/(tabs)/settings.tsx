@@ -65,7 +65,7 @@ export default function Settings() {
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="url"
-          style={[styles.input, typeScale.body, { color: c.foreground, borderColor: c.borderStrong, backgroundColor: c.card }]}
+          style={[styles.input, typeScale.body, { color: c.foreground, borderColor: c.glassBorder, backgroundColor: c.glassFillStrong }]}
         />
         <Text variant="caption" muted>Estado: {STATUS_LABEL[connection.status]} · padrão detectado: {defaultApiUrl()}</Text>
         <View style={styles.buttons}>

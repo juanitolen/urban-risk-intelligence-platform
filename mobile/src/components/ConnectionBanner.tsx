@@ -5,6 +5,7 @@ import { nextDelay } from '../logic/connection';
 import { clockTime } from '../logic/format';
 import { useLiveData, useNow } from '../state/LiveData';
 import { motion, radius, space, useTheme } from '../theme/tokens';
+import { Glass } from './Glass';
 import { Text } from './Text';
 import { useReducedMotion } from './useReducedMotion';
 
@@ -71,8 +72,12 @@ export function ConnectionBanner() {
         transform: [{ translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [-12, 0] }) }],
       }}
     >
-      <View
-        style={[styles.banner, { backgroundColor: look.bg, borderColor: look.fg }]}
+      <Glass
+        rounded={radius.lg}
+        fill={look.bg}
+        borderColor={look.fg}
+        style={styles.outer}
+        contentStyle={styles.banner}
         accessibilityRole="alert"
         accessibilityLiveRegion="polite"
       >
@@ -106,22 +111,14 @@ export function ConnectionBanner() {
             <Text variant="label" color={look.fg}>Tentar</Text>
           </Pressable>
         )}
-      </View>
+      </Glass>
     </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
-  banner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    marginHorizontal: space.lg,
-    marginTop: space.sm,
-    padding: space.md,
-    borderRadius: radius.md,
-    borderWidth: 1,
-  },
+  outer: { marginHorizontal: space.lg, marginTop: space.sm },
+  banner: { flexDirection: 'row', alignItems: 'center', gap: space.md, padding: space.md },
   textCol: { flex: 1, gap: 2 },
-  retry: { minHeight: 44, minWidth: 64, borderWidth: 1, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.md },
+  retry: { minHeight: 44, minWidth: 64, borderWidth: 1, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.md },
 });
