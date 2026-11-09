@@ -36,6 +36,8 @@ public class IngestionService {
     static final double OPEN_THRESHOLD = 35;
     /** Abaixo desta nota, um alerta ativo é encerrado automaticamente. */
     static final double CLOSE_THRESHOLD = 20;
+    /** Histerese: só encerra se nenhuma leitura recente passou do limiar de atenção (evita "pisca-pisca"). */
+    static final Duration CALM_WINDOW = Duration.ofMinutes(10);
 
     private final DataSourceRepository sources;
     private final ObservationRepository observations;
@@ -100,7 +102,7 @@ public class IngestionService {
         }
 
         apply(alert, result, recent, latest, now);
-        if (!created && result.score() < CLOSE_THRESHOLD) {
+        if (!created && result.score() < CLOSE_THRESHOLD && calm(recent, type, now)) {
             alert.resolve(now);
         }
         alerts.save(alert);
@@ -126,6 +128,13 @@ public class IngestionService {
         alert.setLatitude(round4(recent.stream().mapToDouble(Observation::getLatitude).average().orElse(alert.getLatitude())));
         alert.setLongitude(round4(recent.stream().mapToDouble(Observation::getLongitude).average().orElse(alert.getLongitude())));
         alert.setUpdatedAt(now);
+    }
+
+    /** Verdadeiro se todas as leituras da janela de calmaria estão abaixo do limiar de atenção. */
+    static boolean calm(List<Observation> recent, RiskType type, Instant now) {
+        Instant since = now.minus(CALM_WINDOW);
+        return recent.stream().filter(o -> o.getObservedAt().isAfter(since))
+                .allMatch(o -> o.getValue() <= type.attentionThreshold());
     }
 
     static String resolveRegion(String informed, double lat, double lng) {

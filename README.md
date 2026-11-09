@@ -7,6 +7,17 @@ Plataforma integrada de monitoramento e análise de **riscos urbanos cotidianos*
 
 > Disciplina: Advanced Programming And Mobile Dev — Global Solution
 
+## Vídeo de demonstração
+
+[![Demonstração da Urban Risk Intelligence Platform](docs/demo/preview.jpg)](docs/demo/urban-risk-demo.mp4)
+
+**[▶ Assistir ao vídeo (3min49s)](docs/demo/urban-risk-demo.mp4)**. O vídeo mostra:
+
+- a API rodando e o app recebendo dados em tempo real;
+- a priorização dos alertas e o relato anônimo;
+- o backend sendo **parado**, com o app avisando que está desconectado sem travar;
+- a **reconexão automática**.
+
 ## Integrantes
 
 | Nome completo | RM |
@@ -184,7 +195,7 @@ Detalhes de acessibilidade do requisito 8:
 | Requisito | Implementação |
 |---|---|
 | Arquitetura em camadas | Backend: web → serviço → análise/privacidade → domínio/repositório. Mobile: telas → estado → lógica pura → API. |
-| Testes | 23 testes no backend (unitários + integração com MockMvc) e 17 no mobile (Jest). Veja [Testes](#testes). |
+| Testes | 25 testes no backend (unitários + integração com MockMvc) e 17 no mobile (Jest). Veja [Testes](#testes). |
 | IA / análise para priorizar | `PriorityEngine`: score multifatorial com detecção de anomalia (z-score), tendência (regressão linear), vulnerabilidade social e confiança por fusão de evidências. Veja a próxima seção. |
 | Escalabilidade | API sem estado e paginada, com índices no banco. Threads virtuais (Java 21+, quando disponível). Compressão HTTP e `docker-compose` com 2 réplicas atrás do nginx e PostgreSQL. O app faz sincronização incremental. |
 | Disponibilidade | Health checks (`/actuator/health` com liveness/readiness), desligamento gracioso, `restart: unless-stopped` e failover no nginx. O app é **offline-first**: cache local, backoff exponencial, reconexão automática e fila de relatos. |
@@ -212,6 +223,8 @@ O `PriorityEngine` (`backend/src/main/java/br/com/urbanrisk/service/analysis/Pri
 | Tendência | 15% | **Regressão linear** das leituras recentes, projetando a piora em 15 minutos. |
 | Vulnerabilidade | 15% | Índice social da região: o mesmo alagamento pesa mais onde a população tem menos capacidade de resposta. |
 | Confiança | 15% | Fusão das evidências das fontes (veja abaixo). |
+
+Para evitar alertas "pisca-pisca", um alerta só é encerrado automaticamente quando a nota cai abaixo de 20 **e** nenhuma leitura dos últimos 10 minutos passou do limiar de atenção (histerese).
 
 Depois a nota é **multiplicada pela confiança** (`× (0,5 + 0,5·confiança)`). Assim, um único relato exagerado não passa à frente de um alerta confirmado por sensores. A nota define a severidade: **Baixo** (até 35), **Moderado** (35 a 55), **Alto** (55 a 75) e **Crítico** (75 ou mais). Um alerta abre a partir de 35 e é encerrado sozinho abaixo de 20 ou depois de 15 min sem dados novos.
 
@@ -318,7 +331,7 @@ O movimento segue a skill **design-motion-principles** (lentes de "polimento de 
 ## Testes
 
 ```bash
-# Backend: 23 testes (análise, confiança, privacidade e integração da API)
+# Backend: 25 testes (análise, confiança, privacidade e integração da API)
 cd backend && ./mvnw test
 
 # Mobile: 17 testes (conexão/reconexão, notificações, fila offline, formatação) + typecheck

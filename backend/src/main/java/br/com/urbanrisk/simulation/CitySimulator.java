@@ -33,11 +33,14 @@ public class CitySimulator {
     private static final Logger log = LoggerFactory.getLogger(CitySimulator.class);
 
     private final IngestionService ingestion;
+    private final br.com.urbanrisk.domain.repository.ObservationRepository observations;
     private final Random random;
     private final Map<Region, Map<RiskType, Episode>> state = new EnumMap<>(Region.class);
 
-    public CitySimulator(IngestionService ingestion, SimulationProperties props) {
+    public CitySimulator(IngestionService ingestion, SimulationProperties props,
+                         br.com.urbanrisk.domain.repository.ObservationRepository observations) {
         this.ingestion = ingestion;
+        this.observations = observations;
         this.random = new Random(props.seed());
         for (Region r : Region.values()) {
             Map<RiskType, Episode> m = new EnumMap<>(RiskType.class);
@@ -48,13 +51,36 @@ public class CitySimulator {
         }
     }
 
-    /** Começa a demo com dois episódios em andamento para o painel não abrir vazio. */
+    /**
+     * Retoma o estado da cidade a partir das últimas leituras salvas (o mundo real não "zera" quando
+     * o servidor reinicia). Sem histórico, começa com três episódios para o painel não abrir vazio.
+     */
     @EventListener(ApplicationReadyEvent.class)
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public void warmUp() {
-        state.get(Region.CAPAO_REDONDO).get(RiskType.FLOOD).start(85, 1.0);
-        state.get(Region.ITAQUERA).get(RiskType.HEAT_ISLAND).start(41, 0.4);
-        state.get(Region.SE).get(RiskType.SERVICE_OUTAGE).start(150, 1.0);
-        log.info("Simulador urbano ativo: {} regiões, 3 tipos de risco", Region.values().length);
+        Instant since = Instant.now().minus(java.time.Duration.ofMinutes(30));
+        int resumed = 0;
+        for (Region region : Region.values()) {
+            for (RiskType type : RiskType.values()) {
+                var recent = observations.findRecent(region.label(), type, since);
+                if (recent.isEmpty()) continue;
+                double last = recent.get(0).getValue(); // mais recente primeiro
+                Episode ep = state.get(region).get(type);
+                if (last > type.attentionThreshold()) {
+                    ep.value = last;
+                    ep.start(last, type == RiskType.HEAT_ISLAND ? 0.3 : 0.8);
+                    ep.rising = false; // já no pico: daqui só desce aos poucos
+                    resumed++;
+                }
+            }
+        }
+        if (resumed == 0) {
+            state.get(Region.CAPAO_REDONDO).get(RiskType.FLOOD).start(85, 1.0);
+            state.get(Region.ITAQUERA).get(RiskType.HEAT_ISLAND).start(41, 0.4);
+            state.get(Region.SE).get(RiskType.SERVICE_OUTAGE).start(150, 1.0);
+        }
+        log.info("Simulador urbano ativo: {} regiões, 3 tipos de risco ({} episódio(s) retomado(s))",
+                Region.values().length, resumed);
     }
 
     @Scheduled(fixedRateString = "${urbanrisk.simulation.sensor-interval-ms:5000}", initialDelay = 2000)
