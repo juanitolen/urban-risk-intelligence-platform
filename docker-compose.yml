@@ -1,0 +1,56 @@
+# Sobe Postgres + backend (2 réplicas atrás de um balanceador nginx) para demonstrar
+# escalabilidade horizontal e disponibilidade. Uso: docker compose up --build
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: urbanrisk
+      POSTGRES_USER: urbanrisk
+      POSTGRES_PASSWORD: urbanrisk
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U urbanrisk"]
+      interval: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    environment:
+      SPRING_PROFILES_ACTIVE: postgres
+      DB_URL: jdbc:postgresql://db:5432/urbanrisk
+      INGEST_API_KEY: ${INGEST_API_KEY:-dev-ingest-key}
+      PRIVACY_SALT: ${PRIVACY_SALT:-troque-este-salt-em-producao}
+      # Só uma réplica roda o simulador para não duplicar dados.
+      SIMULATION_ENABLED: "false"
+    depends_on:
+      db:
+        condition: service_healthy
+    deploy:
+      replicas: 2
+    restart: unless-stopped
+
+  simulator:
+    build: ./backend
+    environment:
+      SPRING_PROFILES_ACTIVE: postgres
+      DB_URL: jdbc:postgresql://db:5432/urbanrisk
+      SIMULATION_ENABLED: "true"
+      PRIVACY_SALT: ${PRIVACY_SALT:-troque-este-salt-em-producao}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  gateway:
+    image: nginx:1.27-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./infra/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - api
+      - simulator
+
+volumes:
+  pgdata:

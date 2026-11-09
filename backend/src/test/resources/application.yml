@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:urbanrisk-test;DB_CLOSE_DELAY=-1
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+urbanrisk:
+  simulation:
+    enabled: false
+    sensor-interval-ms: 5000
+    public-interval-ms: 30000
+    community-interval-ms: 20000
+    seed: 1
+  security:
+    ingest-api-key: test-key
+    community-rate-per-minute: 5
+  privacy:
+    salt: test-salt
+    retention-days: 30

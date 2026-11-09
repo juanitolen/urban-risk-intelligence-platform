@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/urbanrisk}
+    username: ${DB_USER:urbanrisk}
+    password: ${DB_PASSWORD:urbanrisk}
+    hikari:
+      maximum-pool-size: 20
+  h2:
+    console:
+      enabled: false

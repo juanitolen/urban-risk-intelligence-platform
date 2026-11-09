@@ -1,0 +1,56 @@
+{
+  "expo": {
+    "name": "Urban Risk",
+    "slug": "urban-risk",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "br.com.urbanrisk.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Usamos sua localiza\u00e7\u00e3o aproximada (~100 m) s\u00f3 para registrar onde est\u00e1 o risco que voc\u00ea est\u00e1 relatando."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0F172A",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "br.com.urbanrisk.app",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "color": "#0369A1"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Usamos sua localiza\u00e7\u00e3o aproximada (~100 m) s\u00f3 para registrar onde est\u00e1 o risco que voc\u00ea est\u00e1 relatando."
+        }
+      ]
+    ],
+    "scheme": "urbanrisk",
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "apiPort": 8080
+    }
+  }
+}

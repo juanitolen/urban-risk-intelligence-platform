@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: urban-risk-backend
+  datasource:
+    url: jdbc:h2:file:./data/urbanrisk;AUTO_SERVER=TRUE
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  threads:
+    virtual:
+      enabled: true
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+  # Atrás do nginx, usa o IP real do cliente (X-Forwarded-For) no limite de relatos.
+  forward-headers-strategy: native
+  compression:
+    enabled: true
+    mime-types: application/json
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+urbanrisk:
+  simulation:
+    enabled: ${SIMULATION_ENABLED:true}
+    sensor-interval-ms: 5000
+    public-interval-ms: 30000
+    community-interval-ms: 20000
+    seed: 42
+  security:
+    ingest-api-key: ${INGEST_API_KEY:dev-ingest-key}
+    community-rate-per-minute: 20
+  privacy:
+    salt: ${PRIVACY_SALT:troque-este-salt-em-producao}
+    retention-days: 30
+
+logging:
+  level:
+    br.com.urbanrisk: INFO

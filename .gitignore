@@ -1,0 +1,25 @@
+# Backend
+backend/target/
+backend/data/
+*.log
+
+# Mobile
+mobile/node_modules/
+mobile/.expo/
+mobile/dist/
+mobile/web-build/
+mobile/ios/
+mobile/android/
+mobile/expo-env.d.ts
+
+# Sistema / IDE
+.DS_Store
+.idea/
+.vscode/
+*.iml
+.env
+
+# Ferramentas locais do agente (não fazem parte do projeto)
+.claude/
+skills-lock.json
+mobile/CLAUDE.md
