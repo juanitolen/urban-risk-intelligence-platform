@@ -11,9 +11,8 @@ Plataforma integrada de monitoramento e análise de **riscos urbanos cotidianos*
 
 | Nome completo | RM |
 |---|---|
-| _Nome do integrante 1_ | RM00000 |
-| _Nome do integrante 2_ | RM00000 |
-| _Nome do integrante 3_ | RM00000 |
+| Juan | RM559744 |
+| Kagio | RM559212 |
 
 ---
 
